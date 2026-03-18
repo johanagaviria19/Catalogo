@@ -1,0 +1,48 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { updateOrderStatus } from '@/lib/actions/orders'
+import type { OrderStatus } from '@/lib/types/database'
+
+interface OrderStatusSelectProps {
+  orderId: string
+  currentStatus: OrderStatus
+}
+
+const statuses: { value: OrderStatus; label: string }[] = [
+  { value: 'pending', label: 'Pendiente' },
+  { value: 'confirmed', label: 'Confirmado' },
+  { value: 'preparing', label: 'Preparando' },
+  { value: 'ready', label: 'Listo para entregar' },
+  { value: 'delivered', label: 'Entregado' },
+  { value: 'cancelled', label: 'Cancelado' },
+]
+
+export function OrderStatusSelect({ orderId, currentStatus }: OrderStatusSelectProps) {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = async (value: OrderStatus) => {
+    setLoading(true)
+    await updateOrderStatus(orderId, value)
+    router.refresh()
+    setLoading(false)
+  }
+
+  return (
+    <Select value={currentStatus} onValueChange={handleChange} disabled={loading}>
+      <SelectTrigger className="w-40">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {statuses.map((status) => (
+          <SelectItem key={status.value} value={status.value}>
+            {status.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
