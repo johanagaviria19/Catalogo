@@ -24,7 +24,7 @@ interface CartContentProps {
 export function CartContent({ user, creditLimit, currentCredit }: CartContentProps) {
   const router = useRouter()
   const { items, removeItem, updateQuantity, clearCart, total } = useCart()
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('efectivo')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -45,7 +45,7 @@ export function CartContent({ user, creditLimit, currentCredit }: CartContentPro
       return
     }
 
-    if (paymentMethod === 'credit' && total > availableCredit) {
+    if (paymentMethod === 'credito' && total > availableCredit) {
       setError('No tienes suficiente crédito disponible')
       return
     }
@@ -183,23 +183,16 @@ export function CartContent({ user, creditLimit, currentCredit }: CartContentPro
                         className="mt-2 space-y-2"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="cash" id="cash" />
-                          <Label htmlFor="cash" className="flex items-center gap-2 cursor-pointer">
+                          <RadioGroupItem value="efectivo" id="efectivo" />
+                          <Label htmlFor="efectivo" className="flex items-center gap-2 cursor-pointer">
                             <Banknote className="h-4 w-4" />
                             Efectivo
                           </Label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="transfer" id="transfer" />
-                          <Label htmlFor="transfer" className="flex items-center gap-2 cursor-pointer">
-                            <Building2 className="h-4 w-4" />
-                            Transferencia
-                          </Label>
-                        </div>
                         {creditLimit > 0 && (
                           <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="credit" id="credit" disabled={availableCredit <= 0} />
-                            <Label htmlFor="credit" className="flex items-center gap-2 cursor-pointer">
+                            <RadioGroupItem value="credito" id="credito" disabled={availableCredit <= 0} />
+                            <Label htmlFor="credito" className="flex items-center gap-2 cursor-pointer">
                               <CreditCard className="h-4 w-4" />
                               Crédito ({formatPrice(availableCredit)} disponible)
                             </Label>

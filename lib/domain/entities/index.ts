@@ -1,6 +1,6 @@
 // Domain Entities - Core business objects
 
-export type Role = 'admin' | 'warehouse' | 'client'
+export type Role = 'admin' | 'bodeguero' | 'cliente'
 
 export interface User {
   id: string
@@ -30,7 +30,7 @@ export interface Product {
   name: string
   slug: string
   description: string | null
-  sku: string
+  sku: string | null
   price: number
   stock: number
   minStock: number
@@ -41,9 +41,9 @@ export interface Product {
   category?: Category
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'dispatched' | 'delivered' | 'cancelled'
-export type PaymentMethod = 'cash' | 'transfer' | 'credit'
-export type PaymentStatus = 'pending' | 'paid' | 'partial'
+export type OrderStatus = 'pendiente' | 'preparando' | 'despachado' | 'entregado' | 'cancelado'
+export type PaymentMethod = 'efectivo' | 'credito'
+export type PaymentStatus = 'pendiente' | 'pagado' | 'parcial'
 
 export interface Order {
   id: string
@@ -51,8 +51,6 @@ export interface Order {
   status: OrderStatus
   paymentMethod: PaymentMethod
   paymentStatus: PaymentStatus
-  subtotal: number
-  tax: number
   total: number
   notes: string | null
   deliveryAddress: string | null
@@ -68,14 +66,14 @@ export interface OrderItem {
   productId: string
   quantity: number
   unitPrice: number
-  total: number
+  subtotal: number
   product?: Product
 }
 
 export interface InventoryMovement {
   id: string
   productId: string
-  type: 'in' | 'out' | 'adjustment'
+  type: 'entrada' | 'salida' | 'ajuste'
   quantity: number
   reason: string | null
   orderId: string | null
@@ -88,7 +86,7 @@ export interface InventoryMovement {
 export interface CreditMovement {
   id: string
   userId: string
-  type: 'charge' | 'payment'
+  type: 'uso' | 'pago' | 'ajuste'
   amount: number
   orderId: string | null
   description: string | null

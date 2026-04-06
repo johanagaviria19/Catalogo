@@ -187,6 +187,46 @@ export async function createCategory(formData: FormData) {
   return { success: true }
 }
 
+export async function updateCategory(id: string, formData: FormData) {
+  const supabase = await createClient()
+  
+  const category = {
+    name: formData.get('name') as string,
+    slug: generateSlug(formData.get('name') as string),
+    description: formData.get('description') as string || null,
+    image_url: formData.get('image_url') as string || null,
+    is_active: formData.get('is_active') === 'true',
+  }
+
+  const { error } = await supabase
+    .from('categories')
+    .update(category)
+    .eq('id', id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidateTag('categories', 'max')
+  return { success: true }
+}
+
+export async function deleteCategory(id: string) {
+  const supabase = await createClient()
+  
+  const { error } = await supabase
+    .from('categories')
+    .update({ is_active: false })
+    .eq('id', id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidateTag('categories', 'max')
+  return { success: true }
+}
+
 export async function getAllCategories(): Promise<Category[]> {
   const supabase = await createClient()
   

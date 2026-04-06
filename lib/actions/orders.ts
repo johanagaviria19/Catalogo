@@ -23,11 +23,9 @@ export async function createOrder(
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert({
-      client_id: user.id,
-      status: 'pending' as OrderStatus,
+      user_id: user.id,
+      status: 'pendiente' as OrderStatus,
       payment_method: paymentMethod,
-      subtotal,
-      discount: 0,
       total,
       notes,
     })
@@ -58,28 +56,27 @@ export async function createOrder(
   }
 
   // If credit payment, update client credit
-  if (paymentMethod === 'credit') {
+  if (paymentMethod === 'credito') {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('current_credit')
+      .select('credit_used')
       .eq('id', user.id)
       .single()
 
     if (profile) {
-      const newCredit = profile.current_credit + total
+      const newCredit = profile.credit_used + total
 
       await supabase
         .from('profiles')
-        .update({ current_credit: newCredit })
+        .update({ credit_used: newCredit })
         .eq('id', user.id)
 
       await supabase.from('credit_movements').insert({
-        client_id: user.id,
+        user_id: user.id,
         order_id: order.id,
-        type: 'charge',
+        type: 'uso',
         amount: total,
-        balance_after: newCredit,
-        notes: `Pedido #${order.id.slice(0, 8)}`,
+        description: `Pedido #${order.id.slice(0, 8)}`,
       })
     }
   }
@@ -97,7 +94,7 @@ export async function getClientOrders(): Promise<Order[]> {
   const { data, error } = await supabase
     .from('orders')
     .select('*, items:order_items(*, product:products(*))')
-    .eq('client_id', user.id)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -137,7 +134,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   }
 
   // If order is delivered, update inventory
-  if (status === 'delivered') {
+  if (status === 'entregado') {
     const { data: order } = await supabase
       .from('orders')
       .select('*, items:order_items(*)')
@@ -158,10 +155,9 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
         await supabase.from('inventory_movements').insert({
           product_id: item.product_id,
           user_id: user?.id,
-          type: 'out',
+          type: 'salida',
           quantity: item.quantity,
           reason: 'Venta',
-          reference_id: orderId,
         })
       }
     }

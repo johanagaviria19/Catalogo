@@ -46,7 +46,7 @@ export function Header({ user }: HeaderProps) {
               <Link href="/mis-pedidos" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Mis Pedidos
               </Link>
-              {(user.role === 'admin' || user.role === 'warehouse') && (
+              {(user.role === 'admin' || user.role === 'bodeguero') && (
                 <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Panel
                 </Link>
@@ -113,7 +113,7 @@ export function Header({ user }: HeaderProps) {
                 >
                   Mis Pedidos
                 </Link>
-                {(user.role === 'admin' || user.role === 'warehouse') && (
+                {(user.role === 'admin' || user.role === 'bodeguero') && (
                   <Link 
                     href="/dashboard" 
                     className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-md"

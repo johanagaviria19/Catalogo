@@ -50,6 +50,7 @@ function SidebarContent({ profile, onLinkClick }: { profile: Profile; onLinkClic
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
+    onLinkClick?.()
     router.push('/')
     router.refresh()
   }

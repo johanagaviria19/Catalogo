@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'warehouse' | 'client'
+export type UserRole = 'admin' | 'bodeguero' | 'cliente'
 
 export interface Profile {
   id: string
@@ -8,7 +8,7 @@ export interface Profile {
   address: string | null
   role: UserRole
   credit_limit: number
-  current_credit: number
+  credit_used: number
   created_at: string
   updated_at: string
 }
@@ -27,7 +27,7 @@ export interface Product {
   category_id: string | null
   name: string
   description: string | null
-  sku: string
+  sku: string | null
   price: number
   stock: number
   min_stock: number
@@ -38,18 +38,17 @@ export interface Product {
   category?: Category
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled'
-export type PaymentMethod = 'cash' | 'credit' | 'transfer'
+export type OrderStatus = 'pendiente' | 'preparando' | 'despachado' | 'entregado' | 'cancelado'
+export type PaymentMethod = 'efectivo' | 'credito'
 
 export interface Order {
   id: string
-  client_id: string
+  user_id: string
   status: OrderStatus
   payment_method: PaymentMethod
-  subtotal: number
-  discount: number
   total: number
   notes: string | null
+  shipping_address: string | null
   created_at: string
   updated_at: string
   client?: Profile
@@ -66,7 +65,7 @@ export interface OrderItem {
   product?: Product
 }
 
-export type MovementType = 'in' | 'out' | 'adjustment'
+export type MovementType = 'entrada' | 'salida' | 'ajuste'
 
 export interface InventoryMovement {
   id: string
@@ -75,22 +74,20 @@ export interface InventoryMovement {
   type: MovementType
   quantity: number
   reason: string | null
-  reference_id: string | null
   created_at: string
   product?: Product
   user?: Profile
 }
 
-export type CreditMovementType = 'charge' | 'payment' | 'adjustment'
+export type CreditMovementType = 'uso' | 'pago' | 'ajuste'
 
 export interface CreditMovement {
   id: string
-  client_id: string
+  user_id: string
   order_id: string | null
   type: CreditMovementType
   amount: number
-  balance_after: number
-  notes: string | null
+  description: string | null
   created_at: string
   order?: Order
 }

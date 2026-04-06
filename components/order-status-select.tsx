@@ -12,12 +12,11 @@ interface OrderStatusSelectProps {
 }
 
 const statuses: { value: OrderStatus; label: string }[] = [
-  { value: 'pending', label: 'Pendiente' },
-  { value: 'confirmed', label: 'Confirmado' },
-  { value: 'preparing', label: 'Preparando' },
-  { value: 'ready', label: 'Listo para entregar' },
-  { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' },
+  { value: 'pendiente', label: 'Pendiente' },
+  { value: 'preparando', label: 'Preparando' },
+  { value: 'despachado', label: 'Despachado' },
+  { value: 'entregado', label: 'Entregado' },
+  { value: 'cancelado', label: 'Cancelado' },
 ]
 
 export function OrderStatusSelect({ orderId, currentStatus }: OrderStatusSelectProps) {
