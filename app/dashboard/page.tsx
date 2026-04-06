@@ -12,10 +12,10 @@ export default async function DashboardPage() {
   const [orders, products, { data: clients }] = await Promise.all([
     getAllOrders(),
     getAllProducts(),
-    supabase.from('profiles').select('*').eq('role', 'client')
+    supabase.from('profiles').select('*').eq('role', 'cliente')
   ])
 
-  const pendingOrders = orders.filter(o => o.status === 'pending').length
+  const pendingOrders = orders.filter(o => o.status === 'pendiente').length
   const todayOrders = orders.filter(o => {
     const today = new Date()
     const orderDate = new Date(o.created_at)

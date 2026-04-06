@@ -22,24 +22,23 @@ export async function guardAdminPage() {
   return guardPage(['admin'], '/')
 }
 
-// Guard for staff pages (admin + warehouse)
+// Guard for staff pages (admin + bodeguero)
 export async function guardStaffPage() {
-  return guardPage(['admin', 'warehouse'], '/')
+  return guardPage(['admin', 'bodeguero'], '/')
 }
 
 // Guard for client pages (any authenticated user)
 export async function guardAuthenticatedPage() {
-  return guardPage(['admin', 'warehouse', 'client'], '/auth/login')
+  return guardPage(['admin', 'bodeguero', 'cliente'], '/auth/login')
 }
 
 // Get role-based redirect path after login
 export function getRedirectPathForRole(role: Role): string {
   switch (role) {
     case 'admin':
-      return '/admin'
-    case 'warehouse':
-      return '/bodega'
-    case 'client':
+    case 'bodeguero':
+      return '/dashboard'
+    case 'cliente':
     default:
       return '/'
   }

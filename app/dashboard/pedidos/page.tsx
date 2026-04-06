@@ -6,27 +6,24 @@ import { OrderStatusSelect } from '@/components/order-status-select'
 import { ShoppingCart } from 'lucide-react'
 
 const statusColors: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  pending: 'secondary',
-  confirmed: 'default',
-  preparing: 'default',
-  ready: 'default',
-  delivered: 'default',
-  cancelled: 'destructive',
+  pendiente: 'secondary',
+  preparando: 'default',
+  despachado: 'default',
+  entregado: 'default',
+  cancelado: 'destructive',
 }
 
 const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  confirmed: 'Confirmado',
-  preparing: 'Preparando',
-  ready: 'Listo',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
+  pendiente: 'Pendiente',
+  preparando: 'Preparando',
+  despachado: 'Despachado',
+  entregado: 'Entregado',
+  cancelado: 'Cancelado',
 }
 
 const paymentLabels: Record<string, string> = {
-  cash: 'Efectivo',
-  credit: 'Crédito',
-  transfer: 'Transferencia',
+  efectivo: 'Efectivo',
+  credito: 'Crédito',
 }
 
 export default async function PedidosPage() {

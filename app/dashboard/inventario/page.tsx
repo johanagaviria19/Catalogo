@@ -23,7 +23,7 @@ export default function InventarioPage() {
   const [submitting, setSubmitting] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<string>('')
-  const [movementType, setMovementType] = useState<MovementType>('in')
+  const [movementType, setMovementType] = useState<MovementType>('entrada')
   const [quantity, setQuantity] = useState('')
   const [reason, setReason] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -61,9 +61,9 @@ export default function InventarioPage() {
     const qty = parseInt(quantity)
     let newStock = product.stock
 
-    if (movementType === 'in') {
+    if (movementType === 'entrada') {
       newStock += qty
-    } else if (movementType === 'out') {
+    } else if (movementType === 'salida') {
       if (qty > product.stock) {
         setError('No hay suficiente stock')
         setSubmitting(false)
@@ -93,7 +93,7 @@ export default function InventarioPage() {
         product_id: selectedProduct,
         user_id: user.id,
         type: movementType,
-        quantity: movementType === 'adjustment' ? newStock : qty,
+        quantity: movementType === 'ajuste' ? newStock : qty,
         reason: reason || null,
       })
 
@@ -163,19 +163,19 @@ export default function InventarioPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="in">
+                      <SelectItem value="entrada">
                         <span className="flex items-center gap-2">
                           <ArrowUp className="h-4 w-4 text-green-500" />
                           Entrada
                         </span>
                       </SelectItem>
-                      <SelectItem value="out">
+                      <SelectItem value="salida">
                         <span className="flex items-center gap-2">
                           <ArrowDown className="h-4 w-4 text-red-500" />
                           Salida
                         </span>
                       </SelectItem>
-                      <SelectItem value="adjustment">
+                      <SelectItem value="ajuste">
                         <span className="flex items-center gap-2">
                           <RefreshCw className="h-4 w-4 text-blue-500" />
                           Ajuste
@@ -186,7 +186,7 @@ export default function InventarioPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="quantity">
-                    {movementType === 'adjustment' ? 'Nuevo Stock *' : 'Cantidad *'}
+                    {movementType === 'ajuste' ? 'Nuevo Stock *' : 'Cantidad *'}
                   </Label>
                   <Input
                     id="quantity"

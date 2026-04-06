@@ -37,7 +37,7 @@ export async function getSession(): Promise<SessionData> {
   }
 
   // Get role from user metadata (set during signup or by admin)
-  const role = (user.user_metadata?.role as Role) || 'client'
+  const role = (user.user_metadata?.role as Role) || 'cliente'
   
   const authUser: AuthUser = {
     id: user.id,
@@ -51,8 +51,8 @@ export async function getSession(): Promise<SessionData> {
     user: authUser,
     isAuthenticated: true,
     isAdmin: role === 'admin',
-    isWarehouse: role === 'warehouse',
-    isClient: role === 'client',
+    isWarehouse: role === 'bodeguero',
+    isClient: role === 'cliente',
   }
 }
 
@@ -104,7 +104,7 @@ export async function requireAdmin(): Promise<SessionData> {
 
 // Check if user is admin or warehouse
 export async function requireStaff(): Promise<SessionData> {
-  return requireRole(['admin', 'warehouse'])
+  return requireRole(['admin', 'bodeguero'])
 }
 
 // Sign out user
@@ -160,7 +160,7 @@ export async function createWarehouseUser(
       email_confirm: true,
       user_metadata: {
         full_name: fullName,
-        role: 'warehouse',
+        role: 'bodeguero',
       },
     })
 
@@ -180,3 +180,63 @@ export async function createWarehouseUser(
     return { success: false, error: 'Error desconocido' }
   }
 }
+
+// Get all users (admin only)
+export async function getAllUsers(): Promise<User[]> {
+  try {
+    await requireAdmin()
+    
+    const supabase = await createClient()
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching users:', error)
+      return []
+    }
+
+    return (data || []).map(d => ({
+      id: d.id,
+      email: d.email,
+      role: d.role,
+      fullName: d.full_name,
+      phone: d.phone,
+      address: d.address,
+      creditLimit: d.credit_limit,
+      creditUsed: d.credit_used,
+      isActive: true, // No hay columna is_active en profiles aún
+      createdAt: new Date(d.created_at),
+    }))
+  } catch {
+    return []
+  }
+}
+
+// Update user credit (admin only)
+export async function updateUserCredit(userId: string, limit: number): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    
+    const supabase = await createClient()
+    
+    const { error } = await supabase
+      .from('profiles')
+      .update({ credit_limit: limit })
+      .eq('id', userId)
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message }
+    }
+    return { success: false, error: 'Error desconocido' }
+  }
+}
+

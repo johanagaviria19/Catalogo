@@ -45,7 +45,7 @@ BEGIN
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', null),
     coalesce(new.raw_user_meta_data ->> 'phone', null),
-    coalesce(new.raw_user_meta_data ->> 'role', 'client')
+    coalesce(new.raw_user_meta_data ->> 'role', 'cliente')
   )
   ON CONFLICT (id) DO UPDATE SET
     email = EXCLUDED.email,
@@ -81,7 +81,7 @@ CREATE POLICY "products_delete_admin" ON products
 
 CREATE POLICY "products_update_staff" ON products
   FOR UPDATE USING (
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 -- Categories
@@ -111,7 +111,7 @@ DROP POLICY IF EXISTS orders_delete_admin ON orders;
 CREATE POLICY "orders_update_staff" ON orders
   FOR UPDATE USING (
     auth.uid() = user_id OR
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 CREATE POLICY "orders_delete_admin" ON orders
@@ -125,7 +125,7 @@ DROP POLICY IF EXISTS order_items_delete_admin ON order_items;
 
 CREATE POLICY "order_items_update_staff" ON order_items
   FOR UPDATE USING (
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 CREATE POLICY "order_items_delete_admin" ON order_items
@@ -141,17 +141,17 @@ DROP POLICY IF EXISTS inventory_delete_admin ON inventory_movements;
 
 CREATE POLICY "inventory_select_staff" ON inventory_movements
   FOR SELECT USING (
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 CREATE POLICY "inventory_insert_staff" ON inventory_movements
   FOR INSERT WITH CHECK (
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 CREATE POLICY "inventory_update_staff" ON inventory_movements
   FOR UPDATE USING (
-    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'warehouse')
+    (auth.jwt() -> 'user_metadata' ->> 'role') IN ('admin', 'bodeguero')
   );
 
 CREATE POLICY "inventory_delete_admin" ON inventory_movements

@@ -19,7 +19,7 @@ export default async function CarritoPage() {
             </p>
           </div>
         </section>
-        <CartContent user={user} creditLimit={profile?.credit_limit || 0} currentCredit={profile?.current_credit || 0} />
+        <CartContent user={user} creditLimit={profile?.credit_limit || 0} currentCredit={profile?.credit_used || 0} />
       </main>
       <Footer />
     </div>

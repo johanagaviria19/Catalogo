@@ -93,7 +93,7 @@ export default async function PerfilPage() {
                     <div className="flex-1">
                       <p className="text-sm text-muted-foreground">Crédito Disponible</p>
                       <p className="font-medium text-primary">
-                        {formatPrice(profile.credit_limit - profile.current_credit)} de {formatPrice(profile.credit_limit)}
+                        {formatPrice(profile.credit_limit - profile.credit_used)} de {formatPrice(profile.credit_limit)}
                       </p>
                     </div>
                   </div>

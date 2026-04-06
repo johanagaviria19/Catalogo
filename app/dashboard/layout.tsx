@@ -13,7 +13,7 @@ export default async function DashboardLayout({
     redirect('/auth/login')
   }
 
-  if (profile.role === 'client') {
+  if (profile.role === 'cliente') {
     redirect('/mis-pedidos')
   }
 

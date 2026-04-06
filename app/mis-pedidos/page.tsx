@@ -8,21 +8,19 @@ import { getClientOrders } from '@/lib/actions/orders'
 import { ShoppingCart, Package } from 'lucide-react'
 
 const statusColors: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  pending: 'secondary',
-  confirmed: 'default',
-  preparing: 'default',
-  ready: 'default',
-  delivered: 'default',
-  cancelled: 'destructive',
+  pendiente: 'secondary',
+  preparando: 'default',
+  despachado: 'default',
+  entregado: 'default',
+  cancelado: 'destructive',
 }
 
 const statusLabels: Record<string, string> = {
-  pending: 'Pendiente',
-  confirmed: 'Confirmado',
-  preparing: 'Preparando',
-  ready: 'Listo para recoger',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
+  pendiente: 'Pendiente',
+  preparando: 'Preparando',
+  despachado: 'Despachado',
+  entregado: 'Entregado',
+  cancelado: 'Cancelado',
 }
 
 export default async function MisPedidosPage() {
