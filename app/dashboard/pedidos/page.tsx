@@ -67,45 +67,47 @@ export default async function PedidosPage() {
               <p className="text-muted-foreground">Los pedidos de tus clientes aparecerán aquí</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID Pedido</TableHead>
-                  <TableHead>Cliente</TableHead>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Pago</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono text-sm">#{order.id.slice(0, 8)}</TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{order.client?.full_name || 'Cliente'}</p>
-                        <p className="text-xs text-muted-foreground">{order.client?.email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm">{formatDate(order.created_at)}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{paymentLabels[order.payment_method]}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">{formatPrice(order.total)}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusColors[order.status]}>
-                        {statusLabels[order.status]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <OrderStatusSelect orderId={order.id} currentStatus={order.status} />
-                    </TableCell>
+            <div className="overflow-x-auto -mx-6 px-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[100px]">ID Pedido</TableHead>
+                    <TableHead className="min-w-[150px]">Cliente</TableHead>
+                    <TableHead className="min-w-[150px]">Fecha</TableHead>
+                    <TableHead className="min-w-[100px]">Pago</TableHead>
+                    <TableHead className="text-right min-w-[100px]">Total</TableHead>
+                    <TableHead className="min-w-[120px]">Estado</TableHead>
+                    <TableHead className="text-right min-w-[150px]">Acciones</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-mono text-sm">#{order.id.slice(0, 8)}</TableCell>
+                      <TableCell>
+                        <div className="max-w-[200px]">
+                          <p className="font-medium truncate">{order.client?.full_name || 'Cliente'}</p>
+                          <p className="text-xs text-muted-foreground truncate">{order.client?.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm whitespace-nowrap">{formatDate(order.created_at)}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{paymentLabels[order.payment_method]}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-medium whitespace-nowrap">{formatPrice(order.total)}</TableCell>
+                      <TableCell>
+                        <Badge variant={statusColors[order.status]}>
+                          {statusLabels[order.status]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <OrderStatusSelect orderId={order.id} currentStatus={order.status} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

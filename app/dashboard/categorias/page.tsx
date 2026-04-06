@@ -208,56 +208,60 @@ export default function CategoriasPage() {
               <p className="text-muted-foreground mb-4">Crea tu primera categoría para organizar productos</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Descripción</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Creada</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {categories.map((cat) => (
-                  <TableRow key={cat.id}>
-                    <TableCell className="font-medium">{cat.name}</TableCell>
-                    <TableCell className="text-muted-foreground line-clamp-1 max-w-[300px]">{cat.description || '-'}</TableCell>
-                    <TableCell>
-                      <Badge variant={cat.is_active ? 'default' : 'secondary'}>
-                        {cat.is_active ? 'Activa' : 'Inactiva'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(cat.created_at).toLocaleDateString('es-CO')}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            setSelectedCategory(cat)
-                            setEditDialogOpen(true)
-                          }}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="text-destructive"
-                          onClick={() => handleDelete(cat.id)}
-                          disabled={deleting}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto -mx-6 px-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[150px]">Nombre</TableHead>
+                    <TableHead className="min-w-[200px]">Descripción</TableHead>
+                    <TableHead className="min-w-[100px]">Estado</TableHead>
+                    <TableHead className="min-w-[120px]">Creada</TableHead>
+                    <TableHead className="text-right min-w-[100px]">Acciones</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {categories.map((cat) => (
+                    <TableRow key={cat.id}>
+                      <TableCell className="font-medium whitespace-nowrap">{cat.name}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <p className="line-clamp-1 max-w-[300px]">{cat.description || '-'}</p>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={cat.is_active ? 'default' : 'secondary'}>
+                          {cat.is_active ? 'Activa' : 'Inactiva'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground whitespace-nowrap">
+                        {new Date(cat.created_at).toLocaleDateString('es-CO')}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => {
+                              setSelectedCategory(cat)
+                              setEditDialogOpen(true)
+                            }}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="text-destructive"
+                            onClick={() => handleDelete(cat.id)}
+                            disabled={deleting}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

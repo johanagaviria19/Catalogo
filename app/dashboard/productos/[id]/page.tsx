@@ -11,7 +11,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { getProductById, updateProduct, deleteProduct, getAllCategories } from '@/lib/actions/products'
-import { ArrowLeft, Loader2, Trash2 } from 'lucide-react'
+import { uploadImage } from '@/lib/supabase/storage'
+import { ArrowLeft, Loader2, Trash2, Upload, ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import { toast } from 'sonner'
 import type { Product, Category } from '@/lib/types/database'
 
@@ -24,6 +26,8 @@ export default function EditarProductoPage({ params }: { params: Promise<{ id: s
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -40,11 +44,24 @@ export default function EditarProductoPage({ params }: { params: Promise<{ id: s
 
       setProduct(prod)
       setCategories(cats)
+      setImagePreview(prod.image_url)
       setLoading(false)
     }
 
     fetchData()
   }, [id, router])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -52,6 +69,17 @@ export default function EditarProductoPage({ params }: { params: Promise<{ id: s
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+    
+    // Upload image if selected
+    if (imageFile) {
+      const imageUrl = await uploadImage(imageFile)
+      if (imageUrl) {
+        formData.set('image_url', imageUrl)
+      }
+    } else if (product?.image_url) {
+      formData.set('image_url', product.image_url)
+    }
+
     const result = await updateProduct(id, formData)
 
     if (result.error) {
@@ -163,25 +191,54 @@ export default function EditarProductoPage({ params }: { params: Promise<{ id: s
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="image_url">URL de Imagen</Label>
-              <Input id="image_url" name="image_url" type="url" defaultValue={product.image_url || ''} placeholder="https://..." />
+            <div className="space-y-4 border-t pt-4">
+              <Label>Imagen del Producto</Label>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="relative w-32 h-32 rounded-lg border-2 border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                  {imagePreview ? (
+                    <Image src={imagePreview} alt="Preview" fill className="object-cover" />
+                  ) : (
+                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1 space-y-2 w-full">
+                  <Input 
+                    id="image_file" 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageChange}
+                    className="hidden" 
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full sm:w-auto"
+                    onClick={() => document.getElementById('image_file')?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Seleccionar Imagen
+                  </Button>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">
+                    Formatos recomendados: JPG, PNG, WEBP. Tamaño máx: 2MB.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 border-t pt-4">
               <Switch id="is_active" name="is_active" defaultChecked={product.is_active} value="true" />
               <Label htmlFor="is_active">Producto Activo</Label>
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
-            <div className="flex gap-4 pt-4">
-              <Button type="submit" disabled={submitting}>
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button type="submit" disabled={submitting} className="w-full sm:w-auto order-1 sm:order-2">
                 {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Guardar Cambios
               </Button>
-              <Link href="/dashboard/productos">
-                <Button type="button" variant="outline">Cancelar</Button>
+              <Link href="/dashboard/productos" className="w-full sm:w-auto order-2 sm:order-1">
+                <Button type="button" variant="outline" className="w-full">Cancelar</Button>
               </Link>
             </div>
           </form>

@@ -42,18 +42,30 @@ async function setupRoles() {
 
     console.log(`✅ Rol actualizado en la tabla profiles para el usuario ${userId}`)
 
-    // Nota: El rol en auth.users (user_metadata) es difícil de actualizar vía SQL directo 
-    // porque está en un campo JSONB y es parte del esquema auth.
-    // Pero nuestras políticas RLS usan la tabla profiles o el JWT metadata.
-    
-    // Intentar actualizar también el metadata en auth.users si es posible
-    await sql`
-      UPDATE auth.users 
-      SET raw_user_meta_data = raw_user_meta_data || ${JSON.stringify({ role: role })}::jsonb
-      WHERE id = ${userId}
+    // 2. Update auth.users metadata
+    // Fetch current metadata first to avoid breaking it
+    const userResult = await sql`
+      SELECT raw_user_meta_data FROM auth.users WHERE id = ${userId}
     `
     
-    console.log(`✅ Metadata actualizado en auth.users para el usuario ${userId}`)
+    if (userResult.length > 0) {
+      let currentMetadata = userResult[0].raw_user_meta_data || {}
+      
+      // Handle potential array issue (safety)
+      if (Array.isArray(currentMetadata)) {
+        currentMetadata = typeof currentMetadata[0] === 'object' ? currentMetadata[0] : {}
+      }
+      
+      const newMetadata = { ...currentMetadata, role: role }
+
+      await sql`
+        UPDATE auth.users 
+        SET raw_user_meta_data = ${newMetadata}
+        WHERE id = ${userId}
+      `
+      console.log(`✅ Metadata actualizado en auth.users para el usuario ${userId}`)
+    }
+
     console.log(`🚀 ¡Listo! ${email} ahora es ${role}. Reinicia sesión en la app para aplicar cambios.`)
 
   } catch (error) {

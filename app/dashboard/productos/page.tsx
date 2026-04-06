@@ -54,46 +54,48 @@ export default async function ProductosPage() {
               </Link>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Producto</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead>Categoría</TableHead>
-                  <TableHead className="text-right">Precio</TableHead>
-                  <TableHead className="text-right">Stock</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{product.sku}</TableCell>
-                    <TableCell>{product.category?.name || '-'}</TableCell>
-                    <TableCell className="text-right">{formatPrice(product.price)}</TableCell>
-                    <TableCell className="text-right">
-                      <span className={product.stock <= product.min_stock ? 'text-yellow-600 font-medium' : ''}>
-                        {product.stock}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                        {product.is_active ? 'Activo' : 'Inactivo'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Link href={`/dashboard/productos/${product.id}`}>
-                        <Button variant="ghost" size="icon">
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </Link>
-                    </TableCell>
+            <div className="overflow-x-auto -mx-6 px-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[150px]">Producto</TableHead>
+                    <TableHead className="min-w-[100px]">SKU</TableHead>
+                    <TableHead className="min-w-[120px]">Categoría</TableHead>
+                    <TableHead className="text-right min-w-[100px]">Precio</TableHead>
+                    <TableHead className="text-right min-w-[80px]">Stock</TableHead>
+                    <TableHead className="min-w-[100px]">Estado</TableHead>
+                    <TableHead className="text-right min-w-[100px]">Acciones</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell className="font-medium whitespace-nowrap">{product.name}</TableCell>
+                      <TableCell className="text-muted-foreground whitespace-nowrap">{product.sku}</TableCell>
+                      <TableCell className="whitespace-nowrap">{product.category?.name || '-'}</TableCell>
+                      <TableCell className="text-right whitespace-nowrap">{formatPrice(product.price)}</TableCell>
+                      <TableCell className="text-right">
+                        <span className={product.stock <= product.min_stock ? 'text-yellow-600 font-medium' : ''}>
+                          {product.stock}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={product.is_active ? 'default' : 'secondary'}>
+                          {product.is_active ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Link href={`/dashboard/productos/${product.id}`}>
+                          <Button variant="ghost" size="icon">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
