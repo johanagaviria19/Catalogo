@@ -8,18 +8,20 @@ export default async function CarritoPage() {
   const user = profile ? { email: profile.email, role: profile.role } : null
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-muted/20">
       <Header user={user} />
-      <main className="flex-1">
-        <section className="py-8 bg-muted/30 border-b">
-          <div className="container">
+      <main className="flex-1 pb-12">
+        <section className="py-10 bg-background border-b">
+          <div className="container px-4 sm:px-6">
             <h1 className="text-3xl font-bold text-foreground">Carrito de Compras</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-1">
               Revisa y confirma tu pedido
             </p>
           </div>
         </section>
-        <CartContent user={user} creditLimit={profile?.credit_limit || 0} currentCredit={profile?.credit_used || 0} />
+        <div className="container px-4 sm:px-6 py-8">
+          <CartContent user={user} creditLimit={profile?.credit_limit || 0} currentCredit={profile?.credit_used || 0} />
+        </div>
       </main>
       <Footer />
     </div>

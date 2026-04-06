@@ -79,3 +79,42 @@ export async function getProfile() {
     return null
   }
 }
+
+export async function updateProfile(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return { error: 'No autorizado' }
+  }
+
+  const fullName = formData.get('fullName') as string
+  const phone = formData.get('phone') as string
+  const address = formData.get('address') as string
+
+  // Update profiles table
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({
+      full_name: fullName,
+      phone: phone,
+      address: address,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', user.id)
+
+  if (profileError) {
+    return { error: profileError.message }
+  }
+
+  // Update auth metadata too
+  await supabase.auth.updateUser({
+    data: {
+      full_name: fullName,
+      phone,
+      address,
+    }
+  })
+
+  return { success: true }
+}
